@@ -184,7 +184,7 @@ body {
         width: 9px;
     }
 }
-@media (max-width: 350px) {
+@media (max-width: 360px) {
     .card {
         padding: 20px 15px;
     }
