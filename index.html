@@ -52,52 +52,59 @@
         const searchBtn = document.querySelector('.searchBtn');
 
         //openweathermap API Key
-        const apiKey = '99139d72ec61a3b58a28c93746338e81';
+        const apiKey = '3b83bff17fc584b631f39bd6da730249';
 
         const getWeather = async (cityName) => {
             const apiURL = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${apiKey}`
             try {
                 const response = await fetch(apiURL);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    if (response.status === 404) {
+                        throw new Error('City not found');
+                    } else if (response.status === 401) {
+                        throw new Error('Invalid API key');
+                    } else {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                 }
                 const data = await response.json();
 
-                    temperature.innerHTML = Math.round(data.main.temp) + '°c'
-                    humidity.innerHTML = Math.round(data.main.humidity) + '%'
-                    wind.innerHTML = Math.round(data.wind.speed) + 'km/h'
-                    city.innerHTML = data.name;
+                temperature.innerHTML = Math.round(data.main.temp) + '°c'
+                humidity.innerHTML = Math.round(data.main.humidity) + '%'
+                wind.innerHTML = Math.round(data.wind.speed) + 'km/h'
+                city.innerHTML = data.name;
 
-                    switch (data.weather[0].main) {
-                        case 'Clouds':
-                            weatherIcon.src = 'images/clouds.png';
-                            break;
-                        case 'Clear':
-                            weatherIcon.src = 'images/clear.png';
-                            break;
-                        case 'Mist':
-                            weatherIcon.src = 'images/mist.png';
-                            break;
-                        case 'Rain':
-                            weatherIcon.src = 'images/rain.png';
-                            break;
-                        case 'Drizzle':
-                            weatherIcon.src = 'images/drizzle.png';
-                            break;
-                        case 'Snow':
-                            weatherIcon.src = 'images/snow.png';
-                            break;
-                        default:
-                            weatherIcon.src = 'images/clear.png';
-                            break;
-                    }
-                    document.querySelector('.weather').style.display = "block";
-                    document.querySelector('.error').style.display = 'none';
+                switch (data.weather[0].main) {
+                    case 'Clouds':
+                        weatherIcon.src = 'images/clouds.png';
+                        break;
+                    case 'Clear':
+                        weatherIcon.src = 'images/clear.png';
+                        break;
+                    case 'Mist':
+                        weatherIcon.src = 'images/mist.png';
+                        break;
+                    case 'Rain':
+                        weatherIcon.src = 'images/rain.png';
+                        break;
+                    case 'Drizzle':
+                        weatherIcon.src = 'images/drizzle.png';
+                        break;
+                    case 'Snow':
+                        weatherIcon.src = 'images/snow.png';
+                        break;
+                    default:
+                        weatherIcon.src = 'images/clear.png';
+                        break;
+                }
+                document.querySelector('.weather').style.display = "block";
+                document.querySelector('.error').style.display = 'none';
 
 
             } catch (error) {
                 document.querySelector('.error').style.display = "block";
                 document.querySelector('.weather').style.display = 'none';
+                document.querySelector('.error p').innerHTML = error.message;
                 console.log(`Something went wrong: ${error.message}`);
             }
         };
@@ -111,7 +118,6 @@
                 alert(`Please Enter a City Name!`)
             }
         })
-        // getWeather();
     </script>
 
 </body>
